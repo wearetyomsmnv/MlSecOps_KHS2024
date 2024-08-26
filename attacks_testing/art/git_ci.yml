@@ -1,0 +1,6 @@
+adversarial_testing:
+  stage: test
+  script:
+    - python adversarial_test.py
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
