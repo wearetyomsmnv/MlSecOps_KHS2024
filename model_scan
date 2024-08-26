@@ -1,0 +1,57 @@
+name: CI
+ 
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+ 
+jobs:
+  build-and-test:
+    runs-on: self-hosted
+ 
+    steps:
+    - uses: actions/checkout@v2
+ 
+    - name: Check Python version
+      run: python3 --version
+ 
+    - name: Create virtual environment
+      run: python3 -m venv venv
+ 
+    - name: Install Python dependencies
+      run: |
+        . venv/bin/activate
+        pip install modelscan dill joblib mlflow bandit --no-warn-script-location
+ 
+    - name: Install system dependencies
+      run: |
+        sudo apt-get install -y clamav clamav-daemon
+        sudo freshclam
+ 
+    - name: Install Trivy
+      run: |
+        wget https://github.com/aquasecurity/trivy/releases/download/v0.49.1/trivy_0.49.1_Linux-64bit.deb
+        sudo dpkg -i trivy_0.49.1_Linux-64bit.deb
+        sudo apt-get install -f
+ 
+    - name: Run modelscan
+      run: |
+        . venv/bin/activate
+        modelscan scan -p . --show-skipped --ignore-errors
+ 
+    - name: Run Trivy filesystem scan
+      run: trivy fs .
+ 
+    - name: Run ClamAV scan
+      run: clamscan .
+ 
+    - name: Run Bandit scan
+      run: |
+        . venv/bin/activate
+        bandit -r .
+ 
+    - name: Run MLflow model validation
+      run: |
+        . venv/bin/activate
+        mlflow models validate -m /model_path
