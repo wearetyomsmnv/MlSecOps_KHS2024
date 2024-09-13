@@ -1,7 +1,7 @@
 # MlSecOps_KHS2024
 
 
-Презентация - https://t.me/pwnai/526
+Презентация - https://t.me/pwnai/528
 
 
 Табличка, с методами, которые вызывают сомнения - https://docs.google.com/spreadsheets/d/1_sUZXJvtIC_aQmVRpHpFK56e1gGsljU-i-dork_CmdQ/edit?pli=1&clckid=a6a87d91&gid=700404440#gid=700404440
